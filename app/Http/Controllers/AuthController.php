@@ -24,6 +24,16 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'Invalid email or password.');
+        }
+
+        if (!$user->email_validated_at) {
+            return back()->with('error', 'Please verify your email address before logging in.');
+        }
+
         $login = Auth::attempt($request->only('email', 'password'));
 
         if ($login) {
@@ -63,23 +73,15 @@ class AuthController extends Controller
             'email_verification_token' => $token,
         ]);
 
-        // Login the user
-        Auth::login($user);
-
         // Send the verification email
         Mail::send('emails.verify', ['token' => $token, 'user' => $user], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Verify Your Email Address');
         });
 
-        // Redirect to products or any other page
-        return redirect('/products')->with('success', 'Registration successful! Please check your email to verify your account.');
-    }
-
-    public function logout()
-    {
-        Auth::logout();
-        return redirect('/');
+        // Redirect to login page with success message
+        return redirect('/login')
+            ->with('success', 'Registration successful! Please check your email to verify your account before logging in.');
     }
 
     public function verifyEmail($token)
@@ -90,10 +92,17 @@ class AuthController extends Controller
             return redirect('/login')->with('error', 'Invalid verification token.');
         }
 
+        $user->email_verified_at = now();
         $user->email_validated_at = Carbon::now();
         $user->email_verification_token = null;
         $user->save();
 
         return redirect('/login')->with('success', 'Email verified successfully! You can now login.');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
     }
 }

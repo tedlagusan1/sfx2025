@@ -48,7 +48,7 @@
                 <div class="flex gap-4 items-center">
                     <button class="primary">Submit</button>
                     <button class="secondary" type="reset">Clear</button>
-                    <a href="{{ url('/') }}"
+                    <a href="{{ url('/login') }}"
                         class="text-green-800 font-bold px-4 py-2 bg-green-200 border border-green-800 rounded">Login</a>
                 </div>
             </form>

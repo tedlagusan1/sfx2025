@@ -6,6 +6,13 @@
         <img src="{{ asset('images/signage.jpg') }}" alt="Signage" class="w-[200px]">
 
         <div class="w-[450px] p-8 bg-white rounded-2xl shadow">
+            {{-- Display success message --}}
+            @if (session('success'))
+                <div class="mb-4 text-green-600 font-semibold text-center">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Display login error --}}
             @if (session('error'))
                 <div class="mb-4 text-red-600 font-semibold text-center">
