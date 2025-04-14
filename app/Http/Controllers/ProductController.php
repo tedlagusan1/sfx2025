@@ -26,12 +26,14 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'status' => 'required|integer|in:0,1,2,3',
         ]);
 
         $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
+            'status' => $request->status,
             'user_id' => Auth::id(),
         ]);
 
